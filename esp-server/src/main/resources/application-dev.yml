@@ -1,0 +1,8 @@
+esp:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    host: localhost
+    port: 3306
+    database: school_enterprise_platform
+    username: root
+    password: "#020728Ceq"

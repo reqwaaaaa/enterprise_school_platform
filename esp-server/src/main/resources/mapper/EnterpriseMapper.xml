@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.school_enterprise_platform.mapper.EnterpriseMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.school_enterprise_platform.entity.Enterprise">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="credit_code" property="creditCode" />
+        <result column="type" property="type" />
+        <result column="location" property="location" />
+        <result column="introduction" property="introduction" />
+        <result column="create_time" property="createTime" />
+        <result column="contact_phone" property="contactPhone" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, name, credit_code, type, location, introduction, create_time, contact_phone
+    </sql>
+
+</mapper>
