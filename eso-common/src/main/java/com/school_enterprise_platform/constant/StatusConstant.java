@@ -1,4 +1,4 @@
-package com.sky.constant;
+package com.school_enterprise_platform.constant;
 
 /**
  * 状态常量，启用或者禁用

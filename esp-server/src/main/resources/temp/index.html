@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>校企慧公共服务平台 - 完整产品原型</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Noto Sans SC', 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #f8fbff, #e8f4ff);
+            color: #2c3e50;
+            line-height: 1.7;
+        }
+        header {
+            background: linear-gradient(135deg, #1e88e5, #1565c0);
+            color: #fff;
+            padding: 60px 20px;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(30,136,229,0.2);
+        }
+        header h1 { font-size: 3em; margin: 0 0 15px; letter-spacing: 2px; }
+        header p { font-size: 1.2em; max-width: 900px; margin: 0 auto; opacity: 0.9; }
+        nav {
+            background: #1565c0;
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        nav a {
+            color: #fff;
+            margin: 0 25px;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            padding: 8px 15px;
+            border-radius: 4px;
+        }
+        nav a:hover { background: rgba(255,255,255,0.2); }
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .section {
+            margin-bottom: 80px;
+            background: #fff;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        h2 {
+            font-size: 2.4em;
+            color: #1565c0;
+            border-bottom: 4px solid #42a5f5;
+            padding-bottom: 15px;
+            margin-bottom: 30px;
+            position: relative;
+        }
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100px;
+            height: 4px;
+            background: #ff9800;
+        }
+        h3 {
+            font-size: 1.8em;
+            color: #1976d2;
+            margin: 30px 0 20px;
+            padding-left: 10px;
+            border-left: 5px solid #42a5f5;
+        }
+        .page {
+            background: #f8fdff;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 25px 0;
+            border: 1px solid #e3f2fd;
+            box-shadow: 0 4px 15px rgba(21,101,192,0.08);
+        }
+        .layout {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 20px;
+        }
+        .sidebar {
+            flex: 1 1 280px;
+            background: linear-gradient(to bottom, #e8f5ff, #bbdefb);
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        .sidebar h4 {
+            color: #1565c0;
+            margin-bottom: 20px;
+            font-size: 1.4em;
+        }
+        .sidebar ul { list-style: none; padding: 0; }
+        .sidebar li {
+            padding: 12px 0;
+            border-bottom: 1px dashed #90caf9;
+            font-size: 1.1em;
+        }
+        .main {
+            flex: 3 1 800px;
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+        .card {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.06);
+            transition: all 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.12);
+        }
+        .btn {
+            display: inline-block;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #42a5f5, #1976d2);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: bold;
+            margin: 10px 10px 10px 0;
+            box-shadow: 0 4px 15px rgba(33,150,243,0.3);
+            transition: all 0.3s;
+        }
+        .btn:hover {
+            background: linear-gradient(135deg, #1976d2, #0d47a1);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(33,150,243,0.4);
+        }
+        .btn-secondary {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+        }
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #f57c00, #e65100);
+        }
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .table th, .table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .table th {
+            background: linear-gradient(to right, #e3f2fd, #bbdefb);
+            color: #1565c0;
+            font-weight: bold;
+        }
+        .table tr:hover { background: #f0f8ff; }
+        .form-group { margin: 20px 0; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #1565c0; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #bbdefb;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+        .search-bar {
+            display: flex;
+            margin-bottom: 30px;
+            background: #fff;
+            padding: 15px;
+            border-radius: 50px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+        .search-bar input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-size: 1.1em;
+            padding: 0 15px;
+        }
+        footer {
+            background: linear-gradient(to right, #1565c0, #003c8f);
+            color: #fff;
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 80px;
+        }
+        footer p { font-size: 1.1em; opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>校企慧公共服务平台</h1>
+    <p>郫都区校企人力资源合作暨高技能人才培训联盟工作平台 · 一站式在线学习、招聘、业务申报综合服务平台</p>
+</header>
+
+<nav>
+    <a href="#overview">平台概览</a>
+    <a href="#website">网站群平台</a>
+    <a href="#support">基础支撑平台</a>
+    <a href="#learning">在线学习平台</a>
+    <a href="#recruitment">招聘系统</a>
+    <a href="#declaration">业务申报系统</a>
+    <a href="#roles">角色功能</a>
+</nav>
+
+<div class="container">
+
+    <!-- 平台概览 -->
+    <div class="section" id="overview">
+        <h2>平台概览</h2>
+        <div class="page">
+            <h3>统一信息门户 - 登录后首页</h3>
+            <div class="layout">
+                <div class="sidebar">
+                    <h4>动态菜单（根据角色显示）</h4>
+                    <ul>
+                        <li>首页</li>
+                        <li>我的课程</li>
+                        <li>职位搜索</li>
+                        <li>简历管理</li>
+                        <li>消息中心</li>
+                        <li>个人中心</li>
+                        <li>退出登录</li>
+                    </ul>
+                </div>
+                <div class="main">
+                    <div class="search-bar">
+                        <input type="text" placeholder="搜索课程、职位、政策、公告...">
+                        <span class="btn">搜索</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                        <div class="card">
+                            <h4>最新公告</h4>
+                            <p>高技能人才培训补贴申报开启通知</p>
+                            <span class="btn btn-secondary">查看详情</span>
+                        </div>
+                        <div class="card">
+                            <h4>热门课程</h4>
+                            <p>Java企业级开发实战</p>
+                            <span class="btn">立即报名</span>
+                        </div>
+                        <div class="card">
+                            <h4>推荐职位</h4>
+                            <p>后端开发工程师 - XX科技</p>
+                            <span class="btn">投递简历</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 网站群平台 -->
+    <div class="section" id="website">
+        <h2>网站群平台（主站 + 子站集群）</h2>
+        <div class="page">
+            <h3>联盟主站首页</h3>
+            <div class="card">
+                <h4>轮播图区</h4>
+                <p>[大图轮播：校企合作会议、培训现场、政策宣传]</p>
+            </div>
+            <div class="layout">
+                <div class="main">
+                    <h4>新闻动态</h4>
+                    <div class="card">郫都区校企联盟2026年工作会议顺利召开</div>
+                    <div class="card">高技能人才培训基地揭牌仪式</div>
+                </div>
+                <div class="sidebar">
+                    <h4>快捷入口</h4>
+                    <p><span class="btn">在线学习</span></p>
+                    <p><span class="btn">招聘大厅</span></p>
+                    <p><span class="btn">业务申报</span></p>
+                    <p><span class="btn">政策法规</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page">
+            <h3>高校子站示例</h3>
+            <div class="layout">
+                <div class="sidebar">
+                    <h4>子站导航</h4>
+                    <ul>
+                        <li>学校概况</li>
+                        <li>专业设置</li>
+                        <li>在线课程</li>
+                        <li>就业指导</li>
+                        <li>校企合作</li>
+                    </ul>
+                </div>
+                <div class="main">
+                    <h4>本校特色课程</h4>
+                    <div class="card">课程名称 | 讲师：XXX | <span class="btn">查看详情</span></div>
+                    <div class="card">课程名称 | 已报名156人 | <span class="btn">进入学习</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="page">
+            <h3>企业子站示例</h3>
+            <div class="layout">
+                <div class="sidebar">
+                    <h4>企业导航</h4>
+                    <ul>
+                        <li>企业简介</li>
+                        <li>招聘职位</li>
+                        <li>员工培训</li>
+                        <li>申报记录</li>
+                    </ul>
+                </div>
+                <div class="main">
+                    <h4>招聘信息</h4>
+                    <table class="table">
+                        <thead><tr><th>职位</th><th>薪资</th><th>需求人数</th><th>操作</th></tr></thead>
+                        <tbody>
+                        <tr><td>软件工程师</td><td>12-18k</td><td>5</td><td><span class="btn">修改</span></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 应用基础支撑平台 -->
+    <div class="section" id="support">
+        <h2>应用基础支撑平台</h2>
+        <div class="page">
+            <h3>统一用户管理（政府管理员）</h3>
+            <table class="table">
+                <thead><tr><th>用户名</th><th>真实姓名</th><th>角色</th><th>所属组织</th><th>状态</th><th>操作</th></tr></thead>
+                <tbody>
+                <tr><td>admin001</td><td>张管理员</td><td>政府管理员</td><td>人社局</td><td>启用</td><td><span class="btn">编辑</span> <span class="btn">禁用</span></td></tr>
+                <tr><td>hr001</td><td>李HR</td><td>企业HR</td><td>XX科技</td><td>启用</td><td><span class="btn">重置密码</span></td></tr>
+                </tbody>
+            </table>
+            <p><span class="btn">添加用户</span></p>
+        </div>
+
+        <div class="page">
+            <h3>统一权限管理</h3>
+            <p>角色：[下拉选择]</p>
+            <p>权限分配：[多选复选框 - 职位管理 / 课程管理 / 申报审核 / 报表导出 等]</p>
+            <p><span class="btn">保存权限</span></p>
+        </div>
+
+        <div class="page">
+            <h3>统一检索系统</h3>
+            <div class="search-bar">
+                <input type="text" placeholder="输入关键词搜索课程、职位、政策、用户...">
+                <span class="btn">搜索</span>
+            </div>
+            <div class="card">搜索结果：课程《Java开发》 | 来源：高校子站</div>
+            <div class="card">搜索结果：职位《前端工程师》 | 来源：XX企业</div>
+        </div>
+
+        <div class="page">
+            <h3>统一报表平台</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px;">
+                <div class="card">
+                    <h4>培训统计</h4>
+                    <p>总报名人数：1256</p>
+                    <p>完成率：78%</p>
+                    <span class="btn btn-secondary">查看详情</span>
+                </div>
+                <div class="card">
+                    <h4>就业统计</h4>
+                    <p>投递简历：892份</p>
+                    <p>成功录用：312人</p>
+                    <span class="btn btn-secondary">查看详情</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 在线学习平台 -->
+    <div class="section" id="learning">
+        <h2>在线学习平台（学测评一体化）</h2>
+        <div class="page">
+            <h3>课程中心（公共/本校课程）</h3>
+            <div class="search-bar">
+                <input type="text" placeholder="搜索课程名称、讲师、标签...">
+                <span class="btn">搜索</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;">
+                <div class="card">
+                    <h4>Java企业级开发</h4>
+                    <p>讲师：王老师 | 时长：40小时 | 已报名：238人</p>
+                    <p><span class="btn">查看详情</span> <span class="btn btn-secondary">立即报名</span></p>
+                </div>
+                <div class="card">
+                    <h4>Python数据分析</h4>
+                    <p>讲师：李老师 | 时长：30小时 | 已报名：156人</p>
+                    <p><span class="btn">查看详情</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page">
+            <h3>课程学习界面</h3>
+            <div class="layout">
+                <div class="sidebar">
+                    <h4>课程目录</h4>
+                    <ul>
+                        <li>第1章 基础语法（已完成）</li>
+                        <li>第2章 数据结构（进行中）</li>
+                        <li>第3章 面向对象</li>
+                        <li>第4章 项目实战</li>
+                    </ul>
+                    <p>学习进度：65%</p>
+                </div>
+                <div class="main">
+                    <h4>当前章节：数据结构</h4>
+                    <div style="background:#000; height:400px; border-radius:8px; margin:20px 0; display:flex; align-items:center; justify-content:center; color:#fff;">
+                        <h3>[视频播放器区域]</h3>
+                    </div>
+                    <p>课件下载：[PDF文档链接]</p>
+                    <p><span class="btn">上一节</span> <span class="btn">下一节</span> <span class="btn btn-secondary">标记完成</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page">
+            <h3>考试与考评</h3>
+            <h4>考试标题：Java基础知识考核</h4>
+            <div class="form-group">
+                <label>1. Java中哪个关键字用于继承？（单选）</label>
+                <p><input type="radio"> A. implements</p>
+                <p><input type="radio"> B. extends</p>
+                <p><input type="radio"> C. interface</p>
+            </div>
+            <div class="form-group">
+                <label>2. 请简述JVM内存结构（简答）</label>
+                <textarea rows="4"></textarea>
+            </div>
+            <p><span class="btn">提交考试</span></p>
+        </div>
+
+        <div class="page">
+            <h3>讲师后台 - 课程管理</h3>
+            <p><span class="btn">创建新课程</span></p>
+            <table class="table">
+                <thead><tr><th>课程名称</th><th>类型</th><th>报名人数</th><th>状态</th><th>操作</th></tr></thead>
+                <tbody>
+                <tr><td>Java开发实战</td><td>公共课程</td><td>238</td><td>进行中</td><td><span class="btn">编辑</span> <span class="btn">章节管理</span> <span class="btn">学员统计</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="page">
+            <h3>学员统计分析</h3>
+            <div style="background:#eee; height:300px; border-radius:10px; margin:20px 0; display:flex; align-items:center; justify-content:center;">
+                <h3>[图表：学习进度分布、完成率趋势]</h3>
+            </div>
+            <p><span class="btn btn-secondary">导出报表</span></p>
+        </div>
+    </div>
+
+    <!-- 招聘系统 -->
+    <div class="section" id="recruitment">
+        <h2>招聘系统</h2>
+        <div class="page">
+            <h3>职位大厅</h3>
+            <div class="search-bar">
+                <input type="text" placeholder="搜索职位、企业、地点...">
+                <span class="btn">搜索</span>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 20px;">
+                <div class="card">
+                    <h4>Java开发工程师</h4>
+                    <p>企业：XX科技有限公司 | 薪资：12-18k | 地点：成都郫都区</p>
+                    <p>要求：3年以上经验，熟悉SpringBoot</p>
+                    <p><span class="btn">查看详情</span> <span class="btn btn-secondary">立即投递</span></p>
+                </div>
+                <div class="card">
+                    <h4>前端开发实习生</h4>
+                    <p>企业：YY互联网公司 | 薪资：150/天 | 地点：成都</p>
+                    <p>要求：Vue熟练，2026届实习生</p>
+                    <p><span class="btn">查看详情</span> <span class="btn btn-secondary">投递简历</span></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="page">
+            <h3>我的简历管理</h3>
+            <table class="table">
+                <thead><tr><th>版本</th><th>更新时间</th><th>状态</th><th>操作</th></tr></thead>
+                <tbody>
+                <tr><td>v3.0（最新）</td><td>2026-01-07</td><td>已激活</td><td><span class="btn">编辑</span> <span class="btn">预览</span></td></tr>
+                <tr><td>v2.0</td><td>2025-12-20</td><td>归档</td><td><span class="btn">复制新建</span></td></tr>
+                </tbody>
+            </table>
+            <p><span class="btn">创建新简历</span></p>
+        </div>
+
+        <div class="page">
+            <h3>企业HR - 职位管理</h3>
+            <p><span class="btn">发布新职位</span></p>
+            <table class="table">
+                <thead><tr><th>职位名称</th><th>发布日期</th><th>投递数</th><th>状态</th><th>操作</th></tr></thead>
+                <tbody>
+                <tr><td>Java工程师</td><td>2026-01-01</td><td>45</td><td>招聘中</td><td><span class="btn">查看投递</span> <span class="btn">编辑</span> <span class="btn">下架</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="page">
+            <h3>收到简历筛选</h3>
+            <table class="table">
+                <thead><tr><th>姓名</th><th>投递职位</th><th>投递时间</th><th>简历匹配度</th><th>操作</th></tr></thead>
+                <tbody>
+                <tr><td>张三</td><td>Java工程师</td><td>2026-01-08</td><td>92%</td><td><span class="btn">查看简历</span> <span class="btn">通过</span> <span class="btn">拒绝</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 业务申报系统 -->
+    <div class="section" id="declaration">
+        <h2>业务申报系统</h2>
+        <div class="page">
+            <h3>申报入口（企业用户）</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;">
+                <div class="card">
+                    <h4>高技能人才培训补贴申报</h4>
+                    <p>最高补贴5万元</p>
+                    <span class="btn">立即申报</span>
+                </div>
+                <div class="card">
+                    <h4>技能大师工作室申报</h4>
+                    <p>一次性启动资金支持</p>
+                    <span class="btn">立即申报</span>
+                </div>
+                <div class="card">
+                    <h4>创业项目启动资金补贴</h4>
+                    <p>最高支持10万元</p>
+                    <span class="btn">立即申报</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="page">
+            <h3>申报表单</h3>
+            <div class="form-group">
+                <label>申报类型</label>
+                <select><option>高技能人才培训补贴</option></select>
+            </div>
+            <div class="form-group">
+                <label>申报金额（元）</label>
+                <input type="number" placeholder="50000">
+            </div>
+            <div class="form-group">
+                <label>培训计划及证明材料</label>
+                <input type="file" multiple>
+            </div>
+            <p><span class="btn">提交申报</span></p>
+        </div>
+
+        <div class="page">
+            <h3>政府审核列表</h3>
+            <table class="table">
+                <thead><tr><th>申报编号</th><th>企业名称</th><th>申报类型</th><th>金额</th><th>提交时间</th><th>状态</th><th>操作</th></tr></thead>
+                <tbody>
+                <tr><td>SB20260108-001</td><td>XX科技有限公司</td><td>高技能培训</td><td>50000</td><td>2026-01-08</td><td>待审核</td><td><span class="btn">审核</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="page">
+            <h3>审核处理</h3>
+            <div class="form-group">
+                <label>审核意见</label>
+                <textarea rows="5" placeholder="请填写审核意见..."></textarea>
+            </div>
+            <p>
+                <span class="btn">通过</span>
+                <span class="btn">不通过</span>
+                <span class="btn btn-secondary">候补</span>
+            </p>
+        </div>
+    </div>
+
+    <!-- 角色功能汇总 -->
+    <div class="section" id="roles">
+        <h2>角色功能权限一览</h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px;">
+            <div class="card">
+                <h4>求职者/学生</h4>
+                <ul>
+                    <li>职位搜索与投递</li>
+                    <li>简历多版本管理</li>
+                    <li>课程报名与学习</li>
+                    <li>在线考试</li>
+                    <li>消息沟通</li>
+                    <li>个人统计</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>企业HR</h4>
+                <ul>
+                    <li>职位发布管理</li>
+                    <li>简历筛选</li>
+                    <li>员工培训报名</li>
+                    <li>学习统计</li>
+                    <li>补贴申报</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>辅导员</h4>
+                <ul>
+                    <li>学生简历查看</li>
+                    <li>学习进度监控</li>
+                    <li>班级就业统计</li>
+                    <li>课程/职位推荐</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>培训讲师</h4>
+                <ul>
+                    <li>课程创建与管理</li>
+                    <li>课件上传</li>
+                    <li>学员统计</li>
+                    <li>消息通知</li>
+                </ul>
+            </div>
+            <div class="card">
+                <h4>政府管理员</h4>
+                <ul>
+                    <li>申报多级审核</li>
+                    <li>全平台统计报表</li>
+                    <li>公告发布</li>
+                    <li>用户管理</li>
+                    <li>内容监督删除</li>
+                    <li>日志审计</li>
+                    <li>数据备份</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <p>校企慧公共服务平台完整产品原型 © 2026</p>
+    <p>涵盖网站群管理、统一认证、在线学习、招聘、业务申报五大核心系统，满足郫都区校企合作所有业务场景</p>
+</footer>
+
+</body>
+</html>

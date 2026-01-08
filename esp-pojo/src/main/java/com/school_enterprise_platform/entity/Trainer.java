@@ -5,8 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,33 +14,42 @@ import lombok.Setter;
  * </p>
  *
  * @author Naiweilanlan
- * @since 2026-01-06
+ * @since 2026-01-08
  */
 @Getter
 @Setter
 @TableName("trainer")
-@ApiModel(value = "Trainer对象", description = "培训讲师信息表，存储讲师的基本信息和教学资质")
 public class Trainer implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty("讲师ID，自增主键")
+    /**
+     * 讲师ID，自增主键
+     */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty("关联user表")
+    /**
+     * 关联user表
+     */
     @TableField("user_id")
     private Long userId;
 
-    @ApiModelProperty("学校ID")
+    /**
+     * 学校ID
+     */
     @TableField("school_id")
     private Long schoolId;
 
-    @ApiModelProperty("真实姓名")
+    /**
+     * 真实姓名
+     */
     @TableField("real_name")
     private String realName;
 
-    @ApiModelProperty("职称")
+    /**
+     * 职称
+     */
     @TableField("title")
     private String title;
 }

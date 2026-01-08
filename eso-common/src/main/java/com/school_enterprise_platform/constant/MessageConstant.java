@@ -1,4 +1,4 @@
-package com.sky.constant;
+package com.school_enterprise_platform.constant;
 
 /**
  * 信息提示常量类

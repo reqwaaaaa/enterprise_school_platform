@@ -32,7 +32,7 @@ public class AuthController {
         LoginVO vo = LoginVO.builder()
                 .id(user.getId())
                 .username(user.getUsername())
-                .role(user.getUserRole())
+                .role(Integer.valueOf(user.getUserRole()))
                 .token(token)
                 .build();
 

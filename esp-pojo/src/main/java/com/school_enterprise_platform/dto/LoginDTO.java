@@ -1,10 +1,11 @@
-// 文件：esp-pojo/src/main/java/com/school_enterprise_platform/dto/LoginDTO.java
 package com.school_enterprise_platform.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 
-import javax.validation.constraints.NotBlank;
-
+/**
+ * 登录请求 DTO
+ */
 @Data
 public class LoginDTO {
 

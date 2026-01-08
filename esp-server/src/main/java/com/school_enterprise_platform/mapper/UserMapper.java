@@ -1,20 +1,19 @@
 package com.school_enterprise_platform.mapper;
 
-import com.school_enterprise_platform.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.school_enterprise_platform.entity.User;
 import org.apache.ibatis.annotations.Mapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
-/**
- * <p>
- * 用户基础信息表，存储平台所有用户的基本信息 Mapper 接口
- * </p>
- *
- * @author Naiweilanlan
- * @since 2026-01-06
- */
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
 
-    @Select("SELECT * FROM user WHERE username = #{username} AND is_deleted = 0")
-    User getByUsername(String username);
+    /**
+     * 根据用户名查询用户（推荐使用 Wrapper，避免 IDEA 误报）
+     */
+    default User getByUsername(String username) {
+        return this.selectOne(
+                new LambdaQueryWrapper<User>().eq(User::getUsername, username)
+        );
+    }
 }

@@ -6,8 +6,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDate;
-import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,41 +15,54 @@ import lombok.Setter;
  * </p>
  *
  * @author Naiweilanlan
- * @since 2026-01-06
+ * @since 2026-01-08
  */
 @Getter
 @Setter
 @TableName("resume")
-@ApiModel(value = "Resume对象", description = "简历信息表，存储用户的多版本简历内容和求职信息")
 public class Resume implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @ApiModelProperty("简历ID，自增主键")
+    /**
+     * 简历ID，自增主键
+     */
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    @ApiModelProperty("用户ID（社会个人用户或学生）")
+    /**
+     * 用户ID（社会个人用户或学生）
+     */
     @TableField("user_id")
     private Long userId;
 
-    @ApiModelProperty("简历版本")
+    /**
+     * 简历版本
+     */
     @TableField("version")
     private Integer version;
 
-    @ApiModelProperty("真实姓名")
+    /**
+     * 真实姓名
+     */
     @TableField("real_name")
     private String realName;
 
-    @ApiModelProperty("性别：1男 2女")
+    /**
+     * 性别：1男 2女
+     */
     @TableField("gender")
     private Byte gender;
 
-    @ApiModelProperty("出生日期")
+    /**
+     * 出生日期
+     */
     @TableField("birth_date")
     private LocalDate birthDate;
 
-    @ApiModelProperty("学历")
+    /**
+     * 学历
+     */
     @TableField("education")
     private String education;
 }

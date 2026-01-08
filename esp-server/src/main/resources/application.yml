@@ -13,27 +13,35 @@ spring:
       username: ${esp.datasource.username}
       password: ${esp.datasource.password}
 
+# MyBatis 配置（原有）
 mybatis:
-  #mapper配置文件
   mapper-locations: classpath:mapper/*.xml
-  type-aliases-package: com.enterprise_school_platform.entity
+  type-aliases-package: com.school_enterprise_platform.entity  # 建议改为实际包名
   configuration:
-    #开启驼峰命名
     map-underscore-to-camel-case: true
+
+# MyBatis-Plus 配置（新增，强烈推荐）
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: is_deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+      id-type: auto
+    banner: true
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 开发环境打印SQL
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
 
 logging:
   level:
-    com:
-      enterprise_school_platform:
-        mapper: debug
-        service: info
-        controller: info
+    com.school_enterprise_platform:
+      mapper: debug
+      service: info
+      controller: info
 
 esp:
   jwt:
-    # 设置jwt签名加密时使用的秘钥
     admin-secret-key: X7kP9mN2qL8vB3wE5rT1yU6iO4pA0sD9fG7naiweilanlanmQ3wE6rT8yU0iO2pL4k
-    # 设置jwt过期时间
     admin-ttl: 7200
-    # 设置前端传递过来的令牌名称
     admin-token-name: token
