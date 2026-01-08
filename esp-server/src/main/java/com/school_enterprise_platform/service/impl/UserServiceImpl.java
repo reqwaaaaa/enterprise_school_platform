@@ -8,13 +8,19 @@ import com.school_enterprise_platform.exception.AccountNotFoundException;
 import com.school_enterprise_platform.exception.PasswordErrorException;
 import com.school_enterprise_platform.mapper.UserMapper;
 import com.school_enterprise_platform.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.DigestUtils;  // Spring 自带 MD5 工具（无盐时使用，此处结合盐）
+import org.springframework.util.DigestUtils;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+
+import java.nio.charset.StandardCharsets;
 
 /**
  * 用户服务实现类
+ * 功能：统一登录校验（支持所有角色）
  */
+@Slf4j
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
 
@@ -26,23 +32,37 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String username = loginDTO.getUsername();
         String password = loginDTO.getPassword();
 
-        // 根据用户名查询用户（数据库 user 表）
-        User user = userMapper.selectOne(lambdaQuery().eq(User::getUsername, username));
+        // 1. 根据用户名查询用户（MyBatis-Plus 自动处理逻辑删除）
+        LambdaQueryWrapper<User> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(User::getUsername, username);
+        User user = userMapper.selectOne(wrapper);
 
+        // 2. 账号不存在
         if (user == null) {
             throw new AccountNotFoundException("账号不存在");
         }
 
-        // 密码校验：MD5 + 盐（根据数据库 salt 字段）
-        String encryptedPassword = DigestUtils.md5DigestAsHex((password + user.getSalt()).getBytes());
+        // 3. 密码校验（MD5 + 盐，安全处理 null 盐值）
+        String salt = user.getSalt() == null ? "" : user.getSalt();
+        String encryptedPassword = DigestUtils.md5DigestAsHex((password + salt).getBytes(StandardCharsets.UTF_8));
+        // 添加这三行日志
+        log.info("前端传密码: {}", password);
+        log.info("数据库盐值: {}", salt);
+        log.info("后端计算MD5: {}", encryptedPassword);
+        log.info("数据库存储MD5: {}", user.getPassword());
+
         if (!encryptedPassword.equals(user.getPassword())) {
             throw new PasswordErrorException("密码错误");
         }
 
-        // 检查状态（数据库 status 字段）
-        if (user.getStatus() == 0) {
+        // 4. 账号状态检查
+        if (user.getStatus() != null && user.getStatus() == 0) {
             throw new AccountLockedException("账号被锁定");
         }
+
+        // 5. 可选：更新最后登录时间（生产环境推荐）
+        // user.setLastLogin(LocalDateTime.now());
+        // userMapper.updateById(user);
 
         return user;
     }
