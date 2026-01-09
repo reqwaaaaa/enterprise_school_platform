@@ -2,23 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.school_enterprise_platform.mapper.StudentMapper">
 
-    <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.school_enterprise_platform.entity.Student">
-        <id column="id" property="id" />
-        <result column="user_id" property="userId" />
-        <result column="student_number" property="studentNumber" />
-        <result column="real_name" property="realName" />
-        <result column="gender" property="gender" />
-        <result column="school_id" property="schoolId" />
-        <result column="major" property="major" />
-        <result column="class_name" property="className" />
-        <result column="enrollment_year" property="enrollmentYear" />
-        <result column="counselor_id" property="counselorId" />
+    <!-- 自定义结果映射：返回 User 实体（因为我们想返回学生基本信息，如 username, email 等） -->
+    <resultMap id="UserResultMap" type="com.school_enterprise_platform.entity.User">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="email" column="email"/>
+        <result property="phone" column="phone"/>
+        <result property="userRole" column="user_role"/>
+        <result property="status" column="status"/>
+        <result property="avatar" column="avatar"/>
+        <result property="remark" column="remark"/>
+        <!-- 如需更多字段，继续添加 -->
     </resultMap>
 
-    <!-- 通用查询结果列 -->
-    <sql id="Base_Column_List">
-        id, user_id, student_number, real_name, gender, school_id, major, class_name, enrollment_year, counselor_id
-    </sql>
+    <!-- 辅导员查询所带学生分页列表（JOIN user 和 student 表） -->
+    <select id="selectStudentPageByCounselor" resultMap="UserResultMap">
+        SELECT u.id, u.username, u.email, u.phone, u.user_role, u.status, u.avatar, u.remark
+        FROM user u
+                 INNER JOIN student s ON u.id = s.user_id
+        WHERE s.counselor_id = #{counselorUserId}
+        ORDER BY u.id DESC
+    </select>
 
 </mapper>

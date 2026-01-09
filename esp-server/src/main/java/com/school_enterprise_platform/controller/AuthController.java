@@ -4,6 +4,7 @@ import com.school_enterprise_platform.dto.LoginDTO;
 import com.school_enterprise_platform.entity.User;
 import com.school_enterprise_platform.service.UserService;
 import com.school_enterprise_platform.utils.JwtUtil;
+import com.school_enterprise_platform.dto.RegisterDTO;
 import com.school_enterprise_platform.vo.LoginVO;
 import com.school_enterprise_platform.result.Result;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,12 @@ public class AuthController {
                 .build();
 
         return Result.success(vo);
+    }
+
+    @PostMapping("/register")
+    public Result<String> register(@RequestBody RegisterDTO registerDTO) {
+        userService.register(registerDTO);
+        return Result.success("注册成功");
     }
 
     @PostMapping("/logout")
