@@ -1,0 +1,1810 @@
+{
+  "name": "school_enterprise_platform",
+  "type": "api",
+  "items": [
+    {
+      "name": "认证模块 (/auth)",
+      "items": [
+        {
+          "name": "用户登录（所有角色通用）",
+          "api": {
+            "method": "POST",
+            "path": "/auth/login",
+            "description": "用户登录（所有角色通用）",
+            "request": {
+              "body": {
+                "type": "json",
+                "json": {
+                  "username": "admin",
+                  "password": "123456"
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "登录成功",
+                  "data": {
+                    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.example.token",
+                    "user": {
+                      "id": 1001,
+                      "username": "admin",
+                      "userRole": 6
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "用户注册（支持6种角色）",
+          "api": {
+            "method": "POST",
+            "path": "/auth/register",
+            "description": "用户注册（支持6种角色）",
+            "request": {
+              "body": {
+                "type": "json",
+                "json": {
+                  "username": "test1",
+                  "password": "123456",
+                  "email": "test@qq.com",
+                  "userRole": 1,
+                  "realName": "张三"
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "注册成功",
+                  "data": null
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "公共模块 (/common)",
+      "items": [
+        {
+          "name": "文件上传（COS，支持头像/课件/附件）",
+          "api": {
+            "method": "POST",
+            "path": "/common/upload",
+            "description": "文件上传（COS，支持头像/课件/附件）",
+            "request": {
+              "body": {
+                "type": "form-data",
+                "formData": [
+                  {
+                    "name": "file",
+                    "type": "file",
+                    "required": true
+                  }
+                ]
+              }
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": "https://bucket.cos.ap-chengdu.myqcloud.com/uuid_filename.jpg"
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "查看当前用户信息（脱敏密码/盐）",
+          "api": {
+            "method": "GET",
+            "path": "/common/profile",
+            "description": "查看当前用户信息（脱敏密码/盐）",
+            "request": {},
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "id": 1001,
+                    "username": "admin",
+                    "email": "admin@qq.com",
+                    "phone": "13800000000",
+                    "avatar": "https://example.com/avatar.jpg",
+                    "remark": "个人简介",
+                    "userRole": 6
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "修改个人信息",
+          "api": {
+            "method": "PUT",
+            "path": "/common/profile",
+            "description": "修改个人信息",
+            "request": {
+              "body": {
+                "type": "json",
+                "json": {
+                  "email": "new@qq.com",
+                  "phone": "13999999999",
+                  "avatar": "https://example.com/new.jpg",
+                  "remark": "新简介"
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "修改成功",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "当前用户消息列表（私信+课程通知）",
+          "api": {
+            "method": "GET",
+            "path": "/common/messages",
+            "description": "当前用户消息列表（私信+课程通知）",
+            "request": {
+              "params": [
+                {
+                  "name": "current",
+                  "value": 1
+                },
+                {
+                  "name": "size",
+                  "value": 10
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "total": 50,
+                    "records": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "消息详情并标记已读",
+          "api": {
+            "method": "GET",
+            "path": "/common/messages/{id}",
+            "description": "消息详情并标记已读",
+            "request": {
+              "params": [
+                {
+                  "name": "id",
+                  "value": 1
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "id": 1,
+                    "content": "你好",
+                    "status": 1
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "系统通知列表（全局广播）",
+          "api": {
+            "method": "GET",
+            "path": "/common/notifications",
+            "description": "系统通知列表（全局广播）",
+            "request": {
+              "params": [
+                {
+                  "name": "current",
+                  "value": 1
+                },
+                {
+                  "name": "size",
+                  "value": 10
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "total": 10,
+                    "records": []
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "消息专用模块 (/message)",
+      "items": [
+        {
+          "name": "发送私信（用户间实时通信）",
+          "api": {
+            "method": "POST",
+            "path": "/message/send",
+            "description": "发送私信（用户间实时通信）",
+            "request": {
+              "params": [
+                {
+                  "name": "toUserId",
+                  "value": {
+                    "type": "Long",
+                    "required": true
+                  }
+                },
+                {
+                  "name": "content",
+                  "value": {
+                    "type": "String",
+                    "required": true
+                  }
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "发送成功",
+                  "data": null
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "求职者模块 (/seeker)",
+      "items": [
+        {
+          "name": "/seeker/resume/list",
+          "api": {
+            "method": "GET",
+            "path": "/seeker/resume/list",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "current",
+                  "value": 1
+                },
+                {
+                  "name": "size",
+                  "value": 10
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "total": 5,
+                    "records": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/seeker/resume/detail/{id}",
+          "api": {
+            "method": "GET",
+            "path": "/seeker/resume/detail/{id}",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "id",
+                  "value": 1
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "id": 1,
+                    "realName": "张三"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/seeker/resume/add",
+          "api": {
+            "method": "POST",
+            "path": "/seeker/resume/add",
+            "description": "",
+            "request": {
+              "body": {
+                "type": "json",
+                "json": {
+                  "realName": "张三",
+                  "education": "本科"
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "新增成功",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/seeker/resume/update",
+          "api": {
+            "method": "PUT",
+            "path": "/seeker/resume/update",
+            "description": "",
+            "request": {
+              "body": {
+                "type": "json",
+                "json": {
+                  "id": 1,
+                  "realName": "张三"
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "修改成功",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/seeker/resume/delete/{id}",
+          "api": {
+            "method": "DELETE",
+            "path": "/seeker/resume/delete/{id}",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "id",
+                  "value": 1
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "删除成功",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/seeker/job/search",
+          "api": {
+            "method": "GET",
+            "path": "/seeker/job/search",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "keyword",
+                  "value": "java"
+                },
+                {
+                  "name": "current",
+                  "value": 1
+                },
+                {
+                  "name": "size",
+                  "value": 10
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "total": 50,
+                    "records": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/seeker/job/detail/{id}",
+          "api": {
+            "method": "GET",
+            "path": "/seeker/job/detail/{id}",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "id",
+                  "value": 123
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "id": 123,
+                    "title": "Java工程师"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/seeker/job/apply",
+          "api": {
+            "method": "POST",
+            "path": "/seeker/job/apply",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "jobId",
+                  "value": 123
+                },
+                {
+                  "name": "resumeId",
+                  "value": 456
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "投递成功",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/seeker/course/search",
+          "api": {
+            "method": "GET",
+            "path": "/seeker/course/search",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "keyword",
+                  "value": "编程"
+                },
+                {
+                  "name": "current",
+                  "value": 1
+                },
+                {
+                  "name": "size",
+                  "value": 10
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "total": 20,
+                    "records": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/seeker/course/detail/{id}",
+          "api": {
+            "method": "GET",
+            "path": "/seeker/course/detail/{id}",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "id",
+                  "value": 100
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "id": 100,
+                    "name": "Java开发"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/seeker/course/enroll",
+          "api": {
+            "method": "POST",
+            "path": "/seeker/course/enroll",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "courseId",
+                  "value": 100
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "报名成功",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/seeker/course/learn/{courseId}",
+          "api": {
+            "method": "GET",
+            "path": "/seeker/course/learn/{courseId}",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "courseId",
+                  "value": 100
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "total": 8,
+                    "records": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "个人统计",
+          "api": {
+            "method": "GET",
+            "path": "/seeker/statistics",
+            "description": "个人统计",
+            "request": {},
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "jobApplyCount": 5,
+                    "courseEnrollmentCount": 3,
+                    "completedCourses": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "在校学生模块 (/student)",
+      "items": [
+        {
+          "name": "/student/course/search",
+          "api": {
+            "method": "GET",
+            "path": "/student/course/search",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "keyword",
+                  "value": "java"
+                },
+                {
+                  "name": "current",
+                  "value": 1
+                },
+                {
+                  "name": "size",
+                  "value": 10
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "total": 20,
+                    "records": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/student/course/detail/{id}",
+          "api": {
+            "method": "GET",
+            "path": "/student/course/detail/{id}",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "id",
+                  "value": 100
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "id": 100,
+                    "name": "Java开发"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/student/course/enroll",
+          "api": {
+            "method": "POST",
+            "path": "/student/course/enroll",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "courseId",
+                  "value": 100
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "报名成功",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/student/statistics",
+          "api": {
+            "method": "GET",
+            "path": "/student/statistics",
+            "description": "",
+            "request": {},
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "jobApplyCount": 5,
+                    "courseEnrollmentCount": 3,
+                    "completedCourses": 1
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "企业HR模块 (/hr)",
+      "items": [
+        {
+          "name": "/hr/job/list",
+          "api": {
+            "method": "GET",
+            "path": "/hr/job/list",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "current",
+                  "value": 1
+                },
+                {
+                  "name": "size",
+                  "value": 10
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "total": 10,
+                    "records": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/hr/job/add",
+          "api": {
+            "method": "POST",
+            "path": "/hr/job/add",
+            "description": "",
+            "request": {
+              "body": {
+                "type": "json",
+                "json": {
+                  "title": "Java工程师"
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "发布成功",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/hr/job/update",
+          "api": {
+            "method": "PUT",
+            "path": "/hr/job/update",
+            "description": "",
+            "request": {
+              "body": {
+                "type": "json",
+                "json": {
+                  "id": 123,
+                  "title": "更新后的职位"
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "修改成功",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/hr/job/delete/{id}",
+          "api": {
+            "method": "DELETE",
+            "path": "/hr/job/delete/{id}",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "id",
+                  "value": 123
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "下架成功",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/hr/job/detail/{id}",
+          "api": {
+            "method": "GET",
+            "path": "/hr/job/detail/{id}",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "id",
+                  "value": 123
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "id": 123,
+                    "title": "Java工程师"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/hr/resume/received",
+          "api": {
+            "method": "GET",
+            "path": "/hr/resume/received",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "current",
+                  "value": 1
+                },
+                {
+                  "name": "size",
+                  "value": 10
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "total": 30,
+                    "records": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/hr/resume/detail/{applyId}",
+          "api": {
+            "method": "GET",
+            "path": "/hr/resume/detail/{applyId}",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "applyId",
+                  "value": 456
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "id": 456,
+                    "userId": 1001
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "培训讲师模块 (/trainer)",
+      "items": [
+        {
+          "name": "/trainer/course/list",
+          "api": {
+            "method": "GET",
+            "path": "/trainer/course/list",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "current",
+                  "value": 1
+                },
+                {
+                  "name": "size",
+                  "value": 10
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "total": 8,
+                    "records": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/trainer/course/add",
+          "api": {
+            "method": "POST",
+            "path": "/trainer/course/add",
+            "description": "",
+            "request": {
+              "body": {
+                "type": "json",
+                "json": {
+                  "name": "Spring Boot实战"
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "创建成功",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/trainer/course/update",
+          "api": {
+            "method": "PUT",
+            "path": "/trainer/course/update",
+            "description": "",
+            "request": {
+              "body": {
+                "type": "json",
+                "json": {
+                  "id": 100,
+                  "name": "更新后的课程"
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "修改成功",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/trainer/course/delete/{id}",
+          "api": {
+            "method": "DELETE",
+            "path": "/trainer/course/delete/{id}",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "id",
+                  "value": 100
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "删除成功",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/trainer/course/detail/{id}",
+          "api": {
+            "method": "GET",
+            "path": "/trainer/course/detail/{id}",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "id",
+                  "value": 100
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "id": 100,
+                    "name": "Spring Boot实战"
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/trainer/course/chapter/list/{courseId}",
+          "api": {
+            "method": "GET",
+            "path": "/trainer/course/chapter/list/{courseId}",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "courseId",
+                  "value": 100
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "total": 5,
+                    "records": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/trainer/course/chapter/add",
+          "api": {
+            "method": "POST",
+            "path": "/trainer/course/chapter/add",
+            "description": "",
+            "request": {
+              "body": {
+                "type": "json",
+                "json": {
+                  "courseId": 100,
+                  "title": "第1章"
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "添加成功",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/trainer/course/chapter/update",
+          "api": {
+            "method": "PUT",
+            "path": "/trainer/course/chapter/update",
+            "description": "",
+            "request": {
+              "body": {
+                "type": "json",
+                "json": {
+                  "id": 1,
+                  "title": "更新后的章节"
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "修改成功",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/trainer/course/chapter/delete/{id}",
+          "api": {
+            "method": "DELETE",
+            "path": "/trainer/course/chapter/delete/{id}",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "id",
+                  "value": 1
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "删除成功",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/trainer/course/stats/{courseId}",
+          "api": {
+            "method": "GET",
+            "path": "/trainer/course/stats/{courseId}",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "courseId",
+                  "value": 100
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "enrollmentCount": 50,
+                    "completedCount": 30,
+                    "completionRate": 60.0
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "辅导员模块 (/counselor)",
+      "items": [
+        {
+          "name": "/counselor/student/list",
+          "api": {
+            "method": "GET",
+            "path": "/counselor/student/list",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "current",
+                  "value": 1
+                },
+                {
+                  "name": "size",
+                  "value": 10
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "total": 40,
+                    "records": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/counselor/student/resume/{studentUserId}",
+          "api": {
+            "method": "GET",
+            "path": "/counselor/student/resume/{studentUserId}",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "studentUserId",
+                  "value": 1001
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "total": 3,
+                    "records": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/counselor/student/progress/{studentUserId}",
+          "api": {
+            "method": "GET",
+            "path": "/counselor/student/progress/{studentUserId}",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "studentUserId",
+                  "value": 1001
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "enrolledCourses": 5,
+                    "completedCourses": 2
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/counselor/student/job/{studentUserId}",
+          "api": {
+            "method": "GET",
+            "path": "/counselor/student/job/{studentUserId}",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "studentUserId",
+                  "value": 1001
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "total": 4,
+                    "records": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/counselor/student/analysis/{studentId}",
+          "api": {
+            "method": "GET",
+            "path": "/counselor/student/analysis/{studentId}",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "studentId",
+                  "value": 1001
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "avgScore": 85.5,
+                    "jobApplyCount": 10
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/counselor/class/stats",
+          "api": {
+            "method": "GET",
+            "path": "/counselor/class/stats",
+            "description": "",
+            "request": {},
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "studentCount": 40,
+                    "employmentRate": 75.0
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "政府管理员模块 (/admin)",
+      "items": [
+        {
+          "name": "/admin/declare/list",
+          "api": {
+            "method": "GET",
+            "path": "/admin/declare/list",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "status",
+                  "value": 1
+                },
+                {
+                  "name": "current",
+                  "value": 1
+                },
+                {
+                  "name": "size",
+                  "value": 10
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "total": 100,
+                    "records": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/admin/declare/{id}/audit",
+          "api": {
+            "method": "POST",
+            "path": "/admin/declare/{id}/audit",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "id",
+                  "value": 1
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "审核完成",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/admin/statistics/declare",
+          "api": {
+            "method": "GET",
+            "path": "/admin/statistics/declare",
+            "description": "",
+            "request": {},
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "totalDeclarations": 100,
+                    "pending": 20
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/admin/statistics/training",
+          "api": {
+            "method": "GET",
+            "path": "/admin/statistics/training",
+            "description": "",
+            "request": {},
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "totalCourses": 50,
+                    "activeCourses": 30
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/admin/statistics/employment",
+          "api": {
+            "method": "GET",
+            "path": "/admin/statistics/employment",
+            "description": "",
+            "request": {},
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "totalJobs": 100,
+                    "activeJobs": 60
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/admin/announce",
+          "api": {
+            "method": "POST",
+            "path": "/admin/announce",
+            "description": "",
+            "request": {
+              "body": {
+                "type": "json",
+                "json": {
+                  "content": "平台维护通知"
+                }
+              }
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "公告已发布",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/admin/search/all",
+          "api": {
+            "method": "GET",
+            "path": "/admin/search/all",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "keyword",
+                  "value": "java"
+                },
+                {
+                  "name": "type",
+                  "value": "course"
+                },
+                {
+                  "name": "current",
+                  "value": 1
+                },
+                {
+                  "name": "size",
+                  "value": 10
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "total": 50,
+                    "records": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/admin/content/delete/{type}/{id}",
+          "api": {
+            "method": "DELETE",
+            "path": "/admin/content/delete/{type}/{id}",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "type",
+                  "value": "course"
+                },
+                {
+                  "name": "id",
+                  "value": 100
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "删除成功",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/admin/users",
+          "api": {
+            "method": "GET",
+            "path": "/admin/users",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "current",
+                  "value": 1
+                },
+                {
+                  "name": "size",
+                  "value": 10
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "total": 200,
+                    "records": []
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/admin/users/disable/{id}",
+          "api": {
+            "method": "PUT",
+            "path": "/admin/users/disable/{id}",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "id",
+                  "value": 1001
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "用户已禁用",
+                  "data": null
+                }
+              }
+            }
+          }
+        },
+        {
+          "name": "/admin/logs",
+          "api": {
+            "method": "GET",
+            "path": "/admin/logs",
+            "description": "",
+            "request": {
+              "params": [
+                {
+                  "name": "userId",
+                  "value": 1001
+                },
+                {
+                  "name": "current",
+                  "value": 1
+                },
+                {
+                  "name": "size",
+                  "value": 10
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "data": {
+                    "total": 300,
+                    "records": []
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "考试模块 (/exam)",
+      "items": [
+        {
+          "name": "提交考试问卷",
+          "api": {
+            "method": "POST",
+            "path": "/exam/submit",
+            "description": "提交考试问卷",
+            "request": {
+              "params": [
+                {
+                  "name": "examId",
+                  "value": {
+                    "type": "Long",
+                    "required": true
+                  }
+                },
+                {
+                  "name": "answers",
+                  "value": {
+                    "type": "String",
+                    "required": true
+                  }
+                }
+              ]
+            },
+            "responses": {
+              "200": {
+                "name": "成功",
+                "body": {
+                  "code": 1,
+                  "msg": "提交成功",
+                  "data": null
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -2,19 +2,20 @@ package com.school_enterprise_platform.controller.admin;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.school_enterprise_platform.dto.DeclarationAuditDTO;
-import com.school_enterprise_platform.entity.Declaration;
-import com.school_enterprise_platform.entity.User;
+import com.school_enterprise_platform.entity.*;
 import com.school_enterprise_platform.result.PageResult;
 import com.school_enterprise_platform.result.Result;
-import com.school_enterprise_platform.service.DeclarationService;
-import com.school_enterprise_platform.service.UserService;
+import com.school_enterprise_platform.service.*;
 import com.school_enterprise_platform.utils.BaseContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
+/**
+ * 政府管理员控制器
+ * 补贴审核、全平台统计、用户管理、日志审计、内容删除、公告发布
+ */
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
@@ -23,7 +24,22 @@ public class AdminController {
     private DeclarationService declarationService;
 
     @Autowired
+    private CourseService courseService;
+
+    @Autowired
+    private JobPositionService jobPositionService;
+
+    @Autowired
     private UserService userService;
+
+    @Autowired
+    private MessageService messageService;
+
+    @Autowired
+    private SystemLogService systemLogService;
+
+    @Autowired
+    private AdminSearchService adminSearchService;
 
     // ============ 补贴申报管理 ============
 
@@ -56,7 +72,7 @@ public class AdminController {
     // ============ 全平台统计报表 ============
 
     /**
-     * 全平台申报统计（已实现）
+     * 全平台申报统计
      */
     @GetMapping("/statistics/declare")
     public Result<Map<String, Object>> getDeclareStatistics() {
@@ -66,89 +82,119 @@ public class AdminController {
     }
 
     /**
-     * 全平台培训统计（暂未实现，占位）
+     * 全平台培训统计
      */
     @GetMapping("/statistics/training")
     public Result<Map<String, Object>> getTrainingStatistics() {
         checkAdminRole();
-        // TODO: 后续在 CourseService 中实现 getPlatformTrainingStats()
-        Map<String, Object> placeholder = Map.of("message", "培训统计功能开发中");
-        return Result.success(placeholder);
+        Map<String, Object> stats = courseService.getPlatformTrainingStats();
+        return Result.success(stats);
     }
 
     /**
-     * 全平台就业统计（暂未实现，占位）
+     * 全平台就业统计
      */
     @GetMapping("/statistics/employment")
     public Result<Map<String, Object>> getEmploymentStatistics() {
         checkAdminRole();
-        // TODO: 后续在 JobPositionService 中实现 getPlatformEmploymentStats()
-        Map<String, Object> placeholder = Map.of("message", "就业统计功能开发中");
-        return Result.success(placeholder);
+        Map<String, Object> stats = jobPositionService.getPlatformEmploymentStats();
+        return Result.success(stats);
     }
 
     // ============ 平台公告发布 ============
 
     /**
      * 发布平台公告（广播系统通知）
-     * 暂未实现 publishBroadcastMessage 方法，占位返回
      */
     @PostMapping("/announce")
     public Result<String> publishAnnouncement(@RequestBody Map<String, String> request) {
         checkAdminRole();
         String content = request.get("content");
-        if (content == null || content.isBlank()) {
+        if (content == null || content.trim().isEmpty()) {
             return Result.error("公告内容不能为空");
         }
-        // TODO: 后续在 UserService 中实现 publishBroadcastMessage(content)
-        return Result.success("公告发布功能开发中（内容已接收）");
+        userService.publishBroadcastMessage(content);
+        return Result.success("公告已发布");
     }
 
-    // ============ 全站搜索（简化版，暂未实现） ============
+    // ============ 全站搜索 ============
 
+    /**
+     * 全站信息搜索（支持多种类型）
+     */
     @GetMapping("/search/all")
     public Result<PageResult> globalSearch(
             @RequestParam String keyword,
             @RequestParam String type,
             Page page) {
         checkAdminRole();
-        // TODO: 后续实现全站搜索（可结合 MyBatis-Plus 多表查询或 ES）
-        return Result.success(new PageResult(0L, java.util.Collections.emptyList()));
+        PageResult result = adminSearchService.globalSearch(keyword, type, page);
+        return Result.success(result);
     }
 
     // ============ 强制删除不合规内容 ============
 
+    /**
+     * 强制删除不合规内容（支持 course / user_message 等）
+     */
     @DeleteMapping("/content/delete/{type}/{id}")
-    public Result<String> deleteContent(@PathVariable String type, @PathVariable Long id) {
+    public Result<String> deleteContent(
+            @PathVariable String type,
+            @PathVariable Long id) {
         checkAdminRole();
-        // TODO: 后续实现具体删除逻辑
-        return Result.success("删除功能开发中（type: " + type + ", id: " + id + ")");
+
+        switch (type.toLowerCase()) {
+            case "course":
+                Course course = courseService.getById(id);
+                if (course != null) {
+                    course.setStatus((byte) 2); // 软删除
+                    courseService.updateById(course);
+                }
+                break;
+            case "user_message":
+            case "message":
+                messageService.removeById(id);
+                break;
+            default:
+                return Result.error("不支持的删除类型");
+        }
+        return Result.success("删除成功");
     }
 
     // ============ 系统用户管理 ============
 
+    /**
+     * 系统用户列表（分页）
+     */
     @GetMapping("/users")
-    public Result<PageResult> getUsers(Page<User> page) {
+    public Result<PageResult<User>> getUsers(Page<User> page) {
         checkAdminRole();
-        // TODO: 后续实现用户分页查询
-        return Result.success(new PageResult(0L, java.util.Collections.emptyList()));
+        Page<User> result = userService.page(page);
+        return Result.success(new PageResult(result.getTotal(), result.getRecords()));
     }
 
+    /**
+     * 禁用用户
+     */
     @PutMapping("/users/disable/{id}")
     public Result<String> disableUser(@PathVariable Long id) {
         checkAdminRole();
-        // TODO: 后续在 UserService 中实现 disableUser(id)
-        return Result.success("禁用功能开发中（userId: " + id + ")");
+        userService.disableUser(id);
+        return Result.success("用户已禁用");
     }
 
-    // ============ 日志审计查看（简化） ============
+    // ============ 日志审计查看 ============
 
+    /**
+     * 系统日志查询（支持按用户ID过滤）
+     */
     @GetMapping("/logs")
-    public Result<PageResult> getLogs(Page page,
-                                      @RequestParam(required = false) Long userId) {
+    public Result<PageResult<SystemLog>> getLogs(
+            Page<SystemLog> page,
+            @RequestParam(required = false) Long userId) {
         checkAdminRole();
-        // TODO: 后续实现 system_log 查询
-        return Result.success(new PageResult(0L, java.util.Collections.emptyList()));
+        PageResult result = systemLogService.getLogs(page, userId);
+        return Result.success(result);
     }
 
     // ============ 权限校验工具方法 ============

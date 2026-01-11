@@ -3,21 +3,28 @@ package com.school_enterprise_platform.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.school_enterprise_platform.entity.JobApplication;
 import com.school_enterprise_platform.entity.JobPosition;
 import com.school_enterprise_platform.mapper.JobPositionMapper;
 import com.school_enterprise_platform.result.PageResult;
+import com.school_enterprise_platform.service.JobApplicationService;
 import com.school_enterprise_platform.service.JobPositionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class JobPositionServiceImpl extends ServiceImpl<JobPositionMapper, JobPosition> implements JobPositionService {
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    private JobApplicationService jobApplicationService;
 
     // ============ 求职者：职位搜索 ============
     @Override
@@ -120,5 +127,17 @@ public class JobPositionServiceImpl extends ServiceImpl<JobPositionMapper, JobPo
             throw new RuntimeException("职位不存在或无权限查看");
         }
         return job;
+    }
+
+    @Override
+    public Map<String, Object> getPlatformEmploymentStats() {
+        Map<String, Object> stats = new HashMap<>();
+
+        stats.put("totalJobs", this.count());
+        stats.put("activeJobs", this.lambdaQuery().eq(JobPosition::getStatus, (byte) 1).count());
+        stats.put("applicationCount", jobApplicationService.count());
+        stats.put("successCount", jobApplicationService.lambdaQuery().eq(JobApplication::getStatus, (byte) 1).count());
+
+        return stats;
     }
 }

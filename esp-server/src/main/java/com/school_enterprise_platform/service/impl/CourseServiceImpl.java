@@ -4,20 +4,29 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;  // 正确导入
 import com.school_enterprise_platform.entity.Course;
+import com.school_enterprise_platform.entity.LearningRecord;
 import com.school_enterprise_platform.mapper.CourseMapper;
 import com.school_enterprise_platform.result.PageResult;
-import com.school_enterprise_platform.service.CourseService;
+import com.school_enterprise_platform.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> implements CourseService {
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    private CourseEnrollmentService courseEnrollmentService;
+
+    @Autowired
+    private LearningRecordService learningRecordService;
 
     @Override
     public PageResult searchPublicCourses(String keyword, Page<Course> page) {
@@ -66,5 +75,19 @@ public class CourseServiceImpl extends ServiceImpl<CourseMapper, Course> impleme
             }
         }
         return course;
+    }
+
+    @Override
+    public Map<String, Object> getPlatformTrainingStats() {
+        Map<String, Object> stats = new HashMap<>();
+
+        stats.put("totalCourses", this.count());
+        stats.put("activeCourses", this.lambdaQuery().eq(Course::getStatus, (byte) 1).count());
+        stats.put("enrollmentCount", courseEnrollmentService.count());
+        stats.put("completedCount", learningRecordService.lambdaQuery()
+                .eq(LearningRecord::getStatus, (byte) 2)
+                .count());
+
+        return stats;
     }
 }

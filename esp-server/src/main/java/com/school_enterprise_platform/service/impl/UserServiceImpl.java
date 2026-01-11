@@ -10,7 +10,7 @@ import com.school_enterprise_platform.exception.AccountLockedException;
 import com.school_enterprise_platform.exception.AccountNotFoundException;
 import com.school_enterprise_platform.exception.PasswordErrorException;
 import com.school_enterprise_platform.mapper.*;
-import com.school_enterprise_platform.service.UserService;
+import com.school_enterprise_platform.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -22,6 +22,7 @@ import org.springframework.util.StringUtils;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * 用户服务实现类
@@ -36,6 +37,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+
+    @Autowired
+    private MessageService messageService;
 
     // 角色子表 Mapper
     @Autowired
@@ -222,5 +226,37 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         String key = "common:profile:" + updateUser.getId();
         redisTemplate.delete(key);
+    }
+
+    // ==================== 公告广播 ====================
+    @Override
+    public void publishBroadcastMessage(String content) {
+        List<User> users = this.list();
+        for (User user : users) {
+            UserMessage message = new UserMessage();
+            message.setSenderId(0L);  // 系统发送
+            message.setReceiverId(user.getId());
+            message.setMessageType((byte) 3);
+            message.setContent(content);
+            message.setSendTime(LocalDateTime.now());
+            message.setStatus((byte) 0);
+            messageService.save(message);  // 使用注入的实例调用
+        }
+    }
+
+    // ==================== 删除消息 ====================
+    @Override
+    public void removeMessageById(Long messageId) {
+        messageService.removeById(messageId);  // 使用注入的实例调用
+    }
+
+    // ==================== 禁用用户 ====================
+    @Override
+    public void disableUser(Long id) {
+        User user = this.getById(id);
+        if (user != null) {
+            user.setStatus((byte) 0);
+            this.updateById(user);
+        }
     }
 }

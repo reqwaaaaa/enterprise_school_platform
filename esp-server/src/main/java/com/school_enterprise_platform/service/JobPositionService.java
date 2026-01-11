@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.school_enterprise_platform.entity.JobPosition;
 import com.school_enterprise_platform.result.PageResult;
 
+import java.util.Map;
+
 public interface JobPositionService extends IService<JobPosition> {
 
     // 求职者接口（已存在）
@@ -20,4 +22,6 @@ public interface JobPositionService extends IService<JobPosition> {
     void deleteMyJob(Long enterpriseId, Long jobId);
 
     JobPosition getMyJobDetail(Long enterpriseId, Long jobId);
+
+    Map<String, Object> getPlatformEmploymentStats();
 }

@@ -28,7 +28,7 @@ mybatis-plus:
       logic-delete-value: 1
       logic-not-delete-value: 0
       id-type: auto
-    banner: false                         # 关闭启动 banner（生产建议）
+    banner: false                         # 关闭启动 banner
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 开发环境打印 SQL
   mapper-locations: classpath*:mapper/**/*Mapper.xml
@@ -39,6 +39,24 @@ logging:
       mapper: debug
       service: info
       controller: info
+
+tencent:
+  cos:
+    secret-id: AKIDqY5PXTDnAKI3a5OXWKvMZYLuISPAi3A4
+    secret-key: jU1NWR8cM0To03wgHoERTJwLj4ED0e7M
+    region: ap-shanghai
+    bucket: school-enterprise-1393444897
+    base-url: https://school-enterprise-1393444897.cos.ap-shanghai.myqcloud.com/
+
+elasticsearch:
+    uris: http://localhost:9200
+
+rocketmq:
+  name-server: localhost:9876
+  producer:
+    group: esp-producer-group
+    send-message-timeout: 3000
+    retry-times-when-send-failed: 2
 
 # JWT 配置（所有环境通用）
 esp:

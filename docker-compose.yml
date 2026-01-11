@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  elasticsearch:
+    image: elasticsearch:8.15.3
+    container_name: es
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    networks:
+      - esp-net
+
+  rocketmq-namesrv:
+    image: apache/rocketmq:4.9.4
+    container_name: rmqnamesrv
+    ports:
+      - "9876:9876"
+    command: sh mqnamesrv
+    networks:
+      - esp-net
+
+  rocketmq-broker:
+    image: apache/rocketmq:4.9.4
+    container_name: rmqbroker
+    ports:
+      - "10911:10911"
+      - "10909:10909"
+    environment:
+      - NAMESRV_ADDR=rmqnamesrv:9876
+    command: sh mqbroker -n rmqnamesrv:9876
+    depends_on:
+      - rocketmq-namesrv
+    networks:
+      - esp-net
+
+volumes:
+  es-data:
+
+networks:
+  esp-net:
+    driver: bridge

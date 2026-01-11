@@ -21,4 +21,10 @@ public interface UserService extends IService<User> {
      * 修改个人信息
      */
     void updateProfile(User user);
+
+    void publishBroadcastMessage(String content);
+
+    void removeMessageById(Long messageId);
+
+    void disableUser(Long id);
 }

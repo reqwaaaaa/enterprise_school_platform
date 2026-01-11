@@ -23,4 +23,9 @@ public interface MessageService extends IService<UserMessage> {
      * 获取系统通知列表（全局广播）
      */
     Page<UserMessage> getNotifications(Page<UserMessage> page);
+
+    /**
+     * 发送私信（保存数据库 + 实时推送）
+     */
+    void sendPrivateMessage(Long fromUserId, Long toUserId, String content);
 }
